@@ -29,7 +29,7 @@ export const loginController = async (
 		});
 
 		if (!user) {
-			throw new NotFoundError(`User with email ${email} not found`);
+			throw new NotFoundError('Invalid email address or password provided');
 		}
 
 		if (user.password !== password) {
@@ -53,13 +53,14 @@ export const loginController = async (
 		});
 
 		res.status(200).json({
+			status: 'success',
 			message: 'User logged in successfully',
-			user,
-			accessToken,
-			refreshToken,
+			data: {
+				accessToken,
+				refreshToken,
+			},
 		});
 	} catch (error) {
-		console.error(error);
 		next(error);
 	}
 };
@@ -83,9 +84,11 @@ export const signUpContrtoller = async (
 				phone,
 			},
 		});
-		res.status(201).json({ message: 'User created successfully' });
+		res.status(201).json({
+			status: 'success',
+			message: 'User created successfully',
+		});
 	} catch (error) {
-		console.error(error);
 		next(error);
 	}
 };
@@ -95,9 +98,8 @@ export const tokenController = async (
 	res: Response,
 	next: NextFunction,
 ) => {
-	const { refreshToken } = req.cookies;
-
 	try {
+		const { refreshToken } = req.cookies;
 		if (!refreshToken) {
 			throw new ForbiddenError('Refresh token not found');
 		}
@@ -114,11 +116,43 @@ export const tokenController = async (
 					secure: true,
 					path: process.env.COOKIE_PATH,
 				});
-				res.status(200).json({ accessToken });
+				res.status(200).json({
+					status: 'success',
+					message: 'Token generated successfully',
+					data: { accessToken },
+				});
 			},
 		);
 	} catch (error) {
-		console.error(error);
+		next(error);
+	}
+};
+
+export const verifyTokenController = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const { accessToken } = req.cookies;
+		if (!accessToken) {
+			throw new UnauthorizedError();
+		}
+		jwt.verify(
+			accessToken,
+			process.env.JWT_SECRET!,
+			(error: Error | null) => {
+				if (error) {
+					throw new UnauthorizedError();
+				}
+				res.status(200).json({
+					status: 'success',
+					message: 'User login successful',
+					data: null,
+				});
+			},
+		);
+	} catch (error) {
 		next(error);
 	}
 };
@@ -144,10 +178,11 @@ export const logoutController = async (
 		});
 
 		res.status(200).json({
+			status: 'success',
+			data: null,
 			message: 'User logged out successfully',
 		});
 	} catch (error) {
-		console.error(error);
 		next(error);
 	}
 };

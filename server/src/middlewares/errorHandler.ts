@@ -9,7 +9,7 @@ interface ErrorResponse {
 }
 
 export const errorHandlerMiddleware = (
-	err: Error,
+	err: CustomError,
 	req: Request,
 	res: Response,
 	next: NextFunction,
@@ -18,15 +18,22 @@ export const errorHandlerMiddleware = (
 		success: false,
 		message: 'Internal Server Error',
 	};
-
+	
 	if (process.env.NODE_ENV === 'development') {
 		response.stack = err.stack;
 	}
-
+	
 	if (err instanceof CustomError) {
 		response.message = err.message;
-		return res.status(err.statusCode).json(response);
+		return res.status(err.statusCode).json({
+			status: 'error',
+			message: err.message,
+			error: {
+				code: err.statusCode,
+				details: err.message || 'Something went wrong on the server.',
+			},
+		});
 	}
 
-    return res.status(500).json(response);
+	return res.status(500).json(response);
 };

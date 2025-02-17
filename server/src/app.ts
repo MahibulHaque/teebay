@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(errorHandlerMiddleware)
 app.use('/api/v1', routes);
+app.use(errorHandlerMiddleware)
 
 export default app;
