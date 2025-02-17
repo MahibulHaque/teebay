@@ -33,7 +33,7 @@ export const loginController = async (
 		}
 
 		if (user.password !== password) {
-			throw new UnauthorizedError();
+			throw new UnauthorizedError('Invalid password provided');
 		}
 
 		const accessToken = generateAccessToken(user);
@@ -134,12 +134,12 @@ export const verifyTokenController = async (
 	next: NextFunction,
 ) => {
 	try {
-		const { accessToken } = req.cookies;
-		if (!accessToken) {
+		const { refreshToken } = req.cookies;
+		if (!refreshToken) {
 			throw new UnauthorizedError();
 		}
 		jwt.verify(
-			accessToken,
+			refreshToken,
 			process.env.JWT_SECRET!,
 			(error: Error | null) => {
 				if (error) {

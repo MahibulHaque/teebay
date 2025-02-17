@@ -8,7 +8,7 @@ import {createApi} from '@reduxjs/toolkit/query/react';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
-  baseQuery: axiosBaseQuery({baseUrl: '/'}),
+  baseQuery: axiosBaseQuery({baseUrl: '/auth/'}),
   tagTypes: ['user'],
   endpoints: builder => ({
     createUser: builder.mutation<IResponse, ICreateUserPayload>({
@@ -20,7 +20,7 @@ export const userApi = createApi({
     }),
     loginUser: builder.mutation<IResponse, ILoginUserPayload>({
       query: body => ({
-        url: 'login',
+        url: 'signin',
         method: 'post',
         data: body,
       }),

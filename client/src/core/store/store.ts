@@ -12,20 +12,20 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { apiMiddlewares, apiReducers } from './api';
-import LocalReducer from './reducer';
+import localReducer from './reducer';
 
 
 const persistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: [],
+  whitelist: ['userAuth'],
 };
 
-const persistedReducer = persistReducer(persistConfig, LocalReducer);
+const persistedReducer = persistReducer(persistConfig, localReducer);
 
 export const store = configureStore({
   reducer: {
-    ...persistedReducer, // Combining the persisted reducer
+    root: persistedReducer, // Combining the persisted reducer
     ...apiReducers, // Dynamically adding API reducers
   },
   middleware: getDefaultMiddleware =>
@@ -33,14 +33,12 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(...apiMiddlewares),
+    }).concat(...apiMiddlewares), // Keep your existing API middlewares
 });
-
 export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
-
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch;
 
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()

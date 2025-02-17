@@ -2,7 +2,8 @@ import axios, {AxiosError} from 'axios';
 import {toast} from 'sonner';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.BASE_API_URL,
+  baseURL: import.meta.env.VITE_BASE_API_URL,
+  withCredentials:true,
   headers: {
     'Content-Type': 'application/json',
   },

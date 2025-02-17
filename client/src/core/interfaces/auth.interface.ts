@@ -13,5 +13,11 @@ export interface ILoginUserPayload {
 }
 
 export interface IResponse {
-  success: boolean;
+  status: 'success' | 'error';
+  message: string;
+  data?: unknown;
+  error?: {
+    code: number;
+    details: string;
+  };
 }
