@@ -9,13 +9,34 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
 
+enum Category {
+  ELECTRONICS
+  FURNITURE
+  HOME_APPLIANCES
+  SPORTING_GOODS
+  OUTDOOR
+  TOYS
+}
 
-model User{
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+enum ProductAvailabilityStatus {
+  AVAILABLE      
+  SOLD         
+  RENTED
+  PENDING_SALE
+}
+
+enum ProductRentalPeriod {
+  PER_HOUR
+  PER_DAY
+  PER_WEEK
+}
+
+model User {
+  id        String   @id @default(uuid())
   firstName String
   lastName  String
   address   String
@@ -24,4 +45,67 @@ model User{
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  products      Product[]
+
+  purchasedProductsDetails PurchaseProductDetails[]
+
+  rentedProductsDetails RentedProductDetails[]
+
+  @@map("users")
 }
+
+model Product{
+  id        String   @id @default(uuid())
+  title     String   @unique
+  description String 
+  categories Category[]
+  price       Decimal    @db.Decimal(10, 2)
+
+  rentalPrice Decimal    @db.Decimal(10, 2)
+  rentalPeriod ProductRentalPeriod
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  creator   User   @relation(fields: [creatorId], references: [id])
+  creatorId String
+
+  productAvailability ProductAvailabilityStatus
+
+  purchaseDetails PurchaseProductDetails?
+
+  rentalDetails RentedProductDetails?
+
+  @@map("products")
+}
+
+model PurchaseProductDetails{
+  id        String   @id @default(uuid())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @unique
+
+  purchasedBy User @relation(fields: [purchasedByUserId], references: [id])
+  purchasedByUserId String @unique
+
+  @@map("purchaseDetails")
+}
+
+model RentedProductDetails{
+  id String @id @default(uuid())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  rentedOn DateTime?
+  rentedTill DateTime?
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @unique
+
+  rentedBy User @relation(fields: [rentedByUserId], references: [id])
+  rentedByUserId String @unique
+}
+
