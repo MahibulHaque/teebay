@@ -141,7 +141,7 @@ export const verifyTokenController = async (
 		jwt.verify(
 			refreshToken,
 			process.env.JWT_SECRET!,
-			(error: Error | null) => {
+			(error: Error | null, user: any) => {
 				if (error) {
 					throw new UnauthorizedError();
 				}
@@ -182,6 +182,40 @@ export const logoutController = async (
 			data: null,
 			message: 'User logged out successfully',
 		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const loggedInUserInfoController = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const { accessToken } = req.cookies;
+		jwt.verify(
+			accessToken,
+			process.env.JWT_SECRET!,
+			(error: Error | null, user: any) => {
+				if (error) {
+					console.log(error);
+					throw new CustomError('Jwt verification failed', 500);
+				}
+
+				res.status(200).json({
+					status: 'success',
+					message: 'User info retrived',
+					data: {
+						loggedInUserInfo: {
+							firstName: user.user.firstName,
+							lastName: user.user.lastName,
+							email: user.user.email,
+						},
+					},
+				});
+			},
+		);
 	} catch (error) {
 		next(error);
 	}

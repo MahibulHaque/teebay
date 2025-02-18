@@ -12,12 +12,31 @@ export interface ILoginUserPayload {
   password: string;
 }
 
-export interface IResponse {
+export interface IBaseQueryResponse<T> {
   status: 'success' | 'error';
   message: string;
-  data?: unknown;
+  data: T;
   error?: {
     code: number;
     details: string;
   };
+}
+
+export interface IBaseCommandResponse {
+  status: 'success' | 'error';
+  message: string;
+  error?: {
+    code: number;
+    details: string;
+  };
+}
+
+export interface ILoggedInUserInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface IGetLoggedInUser {
+  loggedInUserInfo: ILoggedInUserInfo;
 }

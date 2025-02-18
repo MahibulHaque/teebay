@@ -1,16 +1,45 @@
-import {BrowserRouter} from 'react-router-dom';
-import AppRouter from './router/AppRouter';
-import AuthRouter from './router/AuthRouter';
-import {useAppSelector} from './core/store/store';
-import {selectIsUserAuthenticated} from './core/store/slices/auth.slice';
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import useAuthInitializer from './core/hooks/useAuthInitializer';
+import SignupPage from './modules/auth/pages/SignupPage';
+import LoginPage from './modules/auth/pages/LoginPage';
+import NotFound from './components/notFound/NotFound';
+import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
+import BaseAppLayout from './layouts/BaseAppLayout';
+import AllProductsPage from './modules/product-management/pages/AllProductsPage';
 
 function App() {
   useAuthInitializer();
-  const isUserAuthenticated = useAppSelector(selectIsUserAuthenticated);
+
   return (
     <BrowserRouter>
-      {isUserAuthenticated ? <AppRouter /> : <AuthRouter />}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <BaseAppLayout>
+                <Outlet />
+              </BaseAppLayout>
+            </ProtectedRoute>
+          }>
+          <Route index element={<Navigate to={'/all-products'} replace />} />
+          <Route
+            key={'products'}
+            path="/all-products"
+            element={<AllProductsPage />}
+          />
+        </Route>
+        <Route key="signin" path={'/signin'} element={<LoginPage />} />
+        <Route key="signup" path="/signup" element={<SignupPage />} />
+        <Route path="/404" element={<NotFound />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
+      </Routes>
     </BrowserRouter>
   );
 }

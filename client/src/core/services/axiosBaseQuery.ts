@@ -22,9 +22,11 @@ const axiosBaseQuery =
         params,
         headers,
       });
+
       return {data: result.data};
     } catch (error) {
       const err = error as AxiosError;
+      console.log(error);
       return {
         error: {
           status: err.response?.status,

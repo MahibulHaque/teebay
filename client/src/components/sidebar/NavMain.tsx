@@ -1,7 +1,5 @@
 
-"use client"
-
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 
 import {
   Collapsible,
@@ -18,21 +16,19 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { INavMenuItem } from "@/core/interfaces/navmenu.interface"
+import { useLocation } from "react-router"
 
 export function NavMain({
   items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+}: Readonly<{
+  items: INavMenuItem[]
+}>) {
+  const location = useLocation()
+
+  const isActiveSubRoute = (url: string) => {
+    return location.pathname === url
+  }
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -56,7 +52,7 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
+                      <SidebarMenuSubButton asChild isActive={isActiveSubRoute(subItem.url)}>
                         <a href={subItem.url}>
                           <span>{subItem.title}</span>
                         </a>

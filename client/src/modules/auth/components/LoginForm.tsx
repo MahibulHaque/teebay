@@ -20,7 +20,7 @@ import * as z from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
 import {useForm} from 'react-hook-form';
-import {Link} from 'react-router';
+import {Link, useNavigate} from 'react-router';
 import {useLoginUserMutation} from '@/core/store/api/userApi';
 import {toast} from 'sonner';
 import {loginFormSchema} from '../schemas/login.schema';
@@ -41,6 +41,7 @@ export default function LoginForm({
   });
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [loginUser, {isLoading, isSuccess, isError, error}] =
     useLoginUserMutation();
@@ -48,6 +49,7 @@ export default function LoginForm({
   useEffect(() => {
     if (isSuccess) {
       dispatch(updateIsUserLoggedIn(true));
+      navigate('/all-products');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
