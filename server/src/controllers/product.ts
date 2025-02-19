@@ -4,12 +4,15 @@ import {
 	createProductRentalRecordValidationSchema,
 	createProductValidationSchema,
 } from '../validators/product';
-import { decodeAccessToken } from '../services/token.service';
 import {
 	addNewProduct,
 	purchaseProduct,
 	rentProduct,
 } from '../services/product.service';
+import {
+	ICreateTokenPayload,
+	verifyAccessToken,
+} from '../services/token.service';
 
 export const createProductController = async (
 	req: Request,
@@ -18,7 +21,9 @@ export const createProductController = async (
 ) => {
 	try {
 		const { accessToken } = req.cookies;
-		const userId = decodeAccessToken(accessToken).id;
+		const { id: userId } = verifyAccessToken(
+			accessToken,
+		) as ICreateTokenPayload;
 		const productData = createProductValidationSchema.parse(req.body);
 
 		await addNewProduct(productData, userId);
@@ -39,7 +44,9 @@ export const createPurchaseRecordController = async (
 ) => {
 	try {
 		const { accessToken } = req.cookies;
-		const userId = decodeAccessToken(accessToken).id;
+		const { id: userId } = verifyAccessToken(
+			accessToken,
+		) as ICreateTokenPayload;
 		const { productId, productTitle } =
 			createProductPurchaseRecordValidationSchema.parse(req.body);
 
@@ -58,7 +65,9 @@ export const createRentalRecordController = async (
 ) => {
 	try {
 		const { accessToken } = req.cookies;
-		const userId = decodeAccessToken(accessToken).id;
+		const { id: userId } = verifyAccessToken(
+			accessToken,
+		) as ICreateTokenPayload;
 		const product = createProductRentalRecordValidationSchema.parse(req.body);
 		await rentProduct({ ...product, userId });
 

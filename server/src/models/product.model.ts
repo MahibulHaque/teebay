@@ -136,3 +136,11 @@ export const getAllLentProducts = async (userId: string) => {
 		},
 	});
 };
+
+export const getAllAvailableProductsOfUser = async (userId: string) => {
+	return prisma.product.findMany({
+		where: {
+			creatorId: userId,
+		},
+	});
+};

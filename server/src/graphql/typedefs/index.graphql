@@ -1,4 +1,6 @@
 type Query {
+  getLoggedInUser:[User!]!
+  getCreatedProducts:[Product!]!
   getAllPurchasedProducts: [PurchaseRecord!]!
   getAllRentedProducts: [RentalRecord!]!
   getAllSoldProducts: [PurchaseRecord!]!

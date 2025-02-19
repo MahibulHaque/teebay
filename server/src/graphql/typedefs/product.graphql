@@ -6,6 +6,22 @@ enum ProductRentalPeriod {
   PER_WEEK
 }
 
+enum Category {
+  ELECTRONICS
+  FURNITURE
+  HOME_APPLIANCES
+  SPORTING_GOODS
+  OUTDOOR
+  TOYS
+}
+
+enum ProductAvailabilityStatus {
+  AVAILABLE      
+  SOLD         
+  RENTED
+  PENDING_SALE
+}
+
 type Product {
   id: ID!
   title: String!
@@ -13,6 +29,8 @@ type Product {
   price: Float!
   rentalPrice: Float
   rentalPeriod: ProductRentalPeriod
+  productAvailability: ProductAvailabilityStatus
+  categories:[Category]
   createdAt: Date!
   updatedAt: Date!
 }

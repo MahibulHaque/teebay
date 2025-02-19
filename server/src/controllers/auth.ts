@@ -1,18 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { generateAccessToken } from '../lib/token';
-import { prisma } from '../lib/prisma';
-import {
-	CustomError,
-	ForbiddenError,
-	NotFoundError,
-	UnauthorizedError,
-} from '../utils/error';
+import { ForbiddenError, UnauthorizedError } from '../utils/error';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
 import {
 	userLoginValidationSchema,
 	userSignupValidationSchema,
 } from '../validators/auth';
+import { checkUserCredentials, createUser } from '../services/auth.service';
+import {
+	generateAccessToken,
+	generateRefreshToken,
+	ICreateTokenPayload,
+	verifyAccessToken,
+	verifyRefreshToken,
+} from '../services/token.service';
 
 export const loginController = async (
 	req: Request,
@@ -22,19 +22,7 @@ export const loginController = async (
 	try {
 		const { email, password } = userLoginValidationSchema.parse(req.body);
 
-		const user = await prisma.user.findFirst({
-			where: {
-				email: email,
-			},
-		});
-
-		if (!user) {
-			throw new NotFoundError('Invalid email address or password provided');
-		}
-
-		if (user.password !== password) {
-			throw new UnauthorizedError('Invalid password provided');
-		}
+		const user = await checkUserCredentials({ email, password });
 
 		const accessToken = generateAccessToken(user);
 		res.cookie(ACCESS_TOKEN, accessToken, {
@@ -43,9 +31,7 @@ export const loginController = async (
 			path: process.env.COOKIE_PATH,
 		});
 
-		const refreshToken = jwt.sign({ user }, process.env.JWT_SECRET!, {
-			expiresIn: '1d',
-		});
+		const refreshToken = generateRefreshToken(user);
 		res.cookie(REFRESH_TOKEN, refreshToken, {
 			httpOnly: true,
 			secure: true,
@@ -71,19 +57,9 @@ export const signUpContrtoller = async (
 	next: NextFunction,
 ) => {
 	try {
-		const { email, password, firstName, lastName, address, phone } =
-			userSignupValidationSchema.parse(req.body);
+		const payload = userSignupValidationSchema.parse(req.body);
 
-		await prisma.user.create({
-			data: {
-				email,
-				password,
-				firstName,
-				lastName,
-				address,
-				phone,
-			},
-		});
+		await createUser(payload);
 		res.status(201).json({
 			status: 'success',
 			message: 'User created successfully',
@@ -103,26 +79,22 @@ export const tokenController = async (
 		if (!refreshToken) {
 			throw new ForbiddenError('Refresh token not found');
 		}
-		jwt.verify(
-			refreshToken,
-			process.env.JWT_SECRET!,
-			(error: Error | null, user: any) => {
-				if (error) {
-					throw new CustomError('Jwt verification failed', 403);
-				}
-				const accessToken = generateAccessToken(user);
-				res.cookie(ACCESS_TOKEN, accessToken, {
-					httpOnly: true,
-					secure: true,
-					path: process.env.COOKIE_PATH,
-				});
-				res.status(200).json({
-					status: 'success',
-					message: 'Token generated successfully',
-					data: { accessToken },
-				});
-			},
+		const decodedRefreshToken = verifyRefreshToken(refreshToken);
+
+		const accessToken = generateAccessToken(
+			decodedRefreshToken as ICreateTokenPayload,
 		);
+
+		res.cookie(ACCESS_TOKEN, accessToken, {
+			httpOnly: true,
+			secure: true,
+			path: process.env.COOKIE_PATH,
+		});
+		res.status(200).json({
+			status: 'success',
+			message: 'Token generated successfully',
+			data: { accessToken },
+		});
 	} catch (error) {
 		next(error);
 	}
@@ -138,20 +110,12 @@ export const verifyTokenController = async (
 		if (!refreshToken) {
 			throw new UnauthorizedError();
 		}
-		jwt.verify(
-			refreshToken,
-			process.env.JWT_SECRET!,
-			(error: Error | null, user: any) => {
-				if (error) {
-					throw new UnauthorizedError();
-				}
-				res.status(200).json({
-					status: 'success',
-					message: 'User login successful',
-					data: null,
-				});
-			},
-		);
+		verifyRefreshToken(refreshToken);
+		res.status(200).json({
+			status: 'success',
+			message: 'User login successful',
+			data: null,
+		});
 	} catch (error) {
 		next(error);
 	}
@@ -194,28 +158,20 @@ export const loggedInUserInfoController = async (
 ) => {
 	try {
 		const { accessToken } = req.cookies;
-		jwt.verify(
-			accessToken,
-			process.env.JWT_SECRET!,
-			(error: Error | null, user: any) => {
-				if (error) {
-					console.log(error);
-					throw new CustomError('Jwt verification failed', 500);
-				}
 
-				res.status(200).json({
-					status: 'success',
-					message: 'User info retrived',
-					data: {
-						loggedInUserInfo: {
-							firstName: user.user.firstName,
-							lastName: user.user.lastName,
-							email: user.user.email,
-						},
-					},
-				});
+		const decodedAccessToken = verifyAccessToken(accessToken) as ICreateTokenPayload;
+
+		res.status(200).json({
+			status: 'success',
+			message: 'User info retrived',
+			data: {
+				loggedInUserInfo: {
+					firstName: decodedAccessToken.firstName,
+					lastName: decodedAccessToken.lastName,
+					email: decodedAccessToken.email,
+				},
 			},
-		);
+		});
 	} catch (error) {
 		next(error);
 	}
