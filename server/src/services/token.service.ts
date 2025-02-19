@@ -15,6 +15,7 @@ export const generateAccessToken = (user: ICreateTokenPayload) => {
 		firstName: user.firstName,
 		lastName: user.lastName,
 	};
+
 	return jwt.sign(jwtPayload, process.env.JWT_SECRET!, { expiresIn: '420s' });
 };
 
@@ -25,7 +26,7 @@ export const generateRefreshToken = (user: User) => {
 		firstName: user.firstName,
 		lastName: user.lastName,
 	};
-	return jwt.sign(jwtPayload, process.env.JWT_SECRET!, { expiresIn: '1d' });
+	return jwt.sign(jwtPayload, process.env.JWT_SECRET!, { expiresIn: '86400s' });
 };
 
 export const verifyRefreshToken = (refreshToken: string) => {

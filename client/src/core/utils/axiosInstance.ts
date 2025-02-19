@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {useDispatch} from 'react-redux';
-import {updateIsUserLoggedIn} from '../store/slices/auth.slice';
+import { updateIsUserLoggedIn } from '../store/slices/auth.slice';
+import { store } from '../store/store';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
@@ -24,29 +24,28 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async function (error) {
-    const dispatch = useDispatch();
-
     const originalReq = error.config;
 
-    if (error.response.status === 403 && !originalReq._retry) {
+    if (error.response?.status === 403 && !originalReq._retry) {
       originalReq._retry = true;
 
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_BASE_API_URL}/auth/generate-token`,
           {},
-          {withCredentials: true},
+          { withCredentials: true },
         );
+        
         if (response.data.status === 'success') {
-          dispatch(updateIsUserLoggedIn(true));
+          store.dispatch(updateIsUserLoggedIn(true));
           return axiosInstance(originalReq);
         } else {
-          dispatch(updateIsUserLoggedIn(false));
+          store.dispatch(updateIsUserLoggedIn(false));
           return Promise.reject(error);
         }
-      } catch (error) {
-        dispatch(updateIsUserLoggedIn(false));
-        return Promise.reject(error);
+      } catch (refreshError) {
+        store.dispatch(updateIsUserLoggedIn(false));
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);

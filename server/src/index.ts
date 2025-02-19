@@ -1,12 +1,10 @@
 import dotenv from 'dotenv';
-import cors from 'cors';
-import express from 'express';
 import { expressMiddleware } from '@apollo/server/express4';
 import app from './app';
 import apolloServer from './graphql';
 import { port } from '../config';
 import { verifyAccessToken } from './services/token.service';
-import { AuthMiddleWare } from './middlewares/authMiddleware';
+
 
 dotenv.config();
 
@@ -15,18 +13,22 @@ const start = async () => {
 		await apolloServer.start();
 		app.use(
 			'/graphql',
-			cors<cors.CorsRequest>({ origin: '*', credentials: true }),
-			express.json(),
-			AuthMiddleWare,
 			expressMiddleware(apolloServer, {
 				//@ts-ignore
 				context: async ({ req }) => {
-					const { accessToken } = req.cookies;
-					try {
-						const user = verifyAccessToken(accessToken as string);
-						return { user:user };
-					} catch (error) {}
-				},
+                    const { accessToken } = req.cookies || {};
+                    
+                    if (!accessToken) {
+                        return { user: null };
+                    }
+                    
+                    try {
+                        const user = verifyAccessToken(accessToken);
+                        return { user };
+                    } catch (error) {
+                        return { user: null };
+                    }
+                },
 			}),
 		);
 

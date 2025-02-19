@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {updateIsUserLoggedIn} from '../store/slices/auth.slice';
 import axiosInstance from '../utils/axiosInstance';
-import { IBaseQueryResponse } from '../interfaces/auth.interface';
+import {IBaseQueryResponse} from '../interfaces/auth.interface';
 
 const useAuthInitializer = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -12,7 +12,10 @@ const useAuthInitializer = () => {
     const checkAuth = async () => {
       setIsLoading(true);
       try {
-        const res = await axiosInstance.get<IBaseQueryResponse<null>>('/auth/verify-token');
+        const res =
+          await axiosInstance.get<IBaseQueryResponse<null>>(
+            '/auth/verify-token',
+          );
         if (res.data.status === 'success') {
           dispatch(updateIsUserLoggedIn(true));
         } else {

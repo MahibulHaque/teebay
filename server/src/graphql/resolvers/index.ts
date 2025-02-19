@@ -1,69 +1,123 @@
-import {
-	getAllAvailableProductsOfUser,
-	getAllLentProducts,
-	getAllPurchasedProducts,
-	getAllRentedProducts,
-	getAllSoldProducts,
-} from '../../models/product.model';
+import { GraphQLError } from 'graphql';
 import { findUserWithId } from '../../models/user.model';
+import { getAllAvailableProductsOfUser, getAllLentProducts, getAllPurchasedProducts, getAllRentedProducts, getAllSoldProducts } from '../../models/product.model';
+
+// Helper function to check authentication
+const checkAuth = (context: any) => {
+  if (!context?.user?.id) {
+    throw new GraphQLError('Authentication required', {
+      extensions: {
+        code: 'UNAUTHENTICATED',
+        http: { status: 401 }
+      },
+    });
+  }
+  return context.user.id;
+};
 
 const resolvers = {
-	Query: {
-		getLoggedInUser: async (parent: any, args: any, context: any) => {
-			if (context && context.user) {
-				const userId = context.user.id;
-				const user = await findUserWithId(userId);
-				return user;
-			} else {
-				throw new Error('User with id not found');
-			}
-		},
-		getCreatedProducts: async (parent: any, args: any, context: any) => {
-			if (context && context.user) {
-				const userId = context.user.id;
-				const products = await getAllAvailableProductsOfUser(userId);
-				return products;
-			} else {
-				throw new Error('User with id not found');
-			}
-		},
-		getAllPurchasedProducts: async (parent: any, args: any, context: any) => {
-			if (context && context.user) {
-				const userId = context.user.id;
-				const products = await getAllPurchasedProducts(userId);
-				return products;
-			} else {
-				throw new Error('User with id not found');
-			}
-		},
-		getAllRentedProducts: async (parent: any, args: any, context: any) => {
-			if (context && context.user) {
-				const userId = context.user.id;
-				const products = await getAllRentedProducts(userId);
-				return products;
-			} else {
-				throw new Error('User with id not found');
-			}
-		},
-		getAllLentProducts: async (parent: any, args: any, context: any) => {
-			if (context && context.user) {
-				const userId = context.user.id;
-				const products = await getAllLentProducts(userId);
-				return products;
-			} else {
-				throw new Error('User with id not found');
-			}
-		},
-		getAllSoldProducts: async (parent: any, args: any, context: any) => {
-			if (context && context.user) {
-				const userId = context.user.id;
-				const products = await getAllSoldProducts(userId);
-				return products;
-			} else {
-				throw new Error('User with id not found');
-			}
-		},
-	},
+  Query: {
+    getLoggedInUser: async (_: any, __: any, context: any) => {
+      const userId = checkAuth(context);
+      
+      const user = await findUserWithId(userId);
+      if (!user) {
+        throw new GraphQLError('User not found', {
+          extensions: {
+            code: 'NOT_FOUND',
+            http: { status: 404 }
+          },
+        });
+      }
+      
+      return user;
+    },
+
+    getCreatedProducts: async (_: any, __: any, context: any) => {
+      const userId = checkAuth(context);
+      
+      try {
+        const products = await getAllAvailableProductsOfUser(userId);
+        return products;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch created products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    },
+
+    getAllPurchasedProducts: async (_: any, __: any, context: any) => {
+      const userId = checkAuth(context);
+      
+      try {
+        const products = await getAllPurchasedProducts(userId);
+        return products;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch purchased products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    },
+
+    getAllRentedProducts: async (_: any, __: any, context: any) => {
+      const userId = checkAuth(context);
+      
+      try {
+        const products = await getAllRentedProducts(userId);
+        return products;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch rented products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    },
+
+    getAllLentProducts: async (_: any, __: any, context: any) => {
+      const userId = checkAuth(context);
+      
+      try {
+        const products = await getAllLentProducts(userId);
+        return products;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch lent products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    },
+
+    getAllSoldProducts: async (_: any, __: any, context: any) => {
+      const userId = checkAuth(context);
+      
+      try {
+        const products = await getAllSoldProducts(userId);
+        return products;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch sold products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    },
+  },
 };
 
 export default resolvers;

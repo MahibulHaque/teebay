@@ -22,7 +22,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import {
-  useLoggedInUserInfoQuery,
   useLogoutUserMutation,
 } from '@/core/store/api/userApi';
 import {ILoggedInUserInfo} from '@/core/interfaces/auth.interface';
@@ -31,9 +30,11 @@ import {useEffect} from 'react';
 import {useNavigate} from 'react-router';
 import {useAppDispatch} from '@/core/store/store';
 import {updateIsUserLoggedIn} from '@/core/store/slices/auth.slice';
+import { useQuery } from '@apollo/client';
+import { GET_LOGGED_USER_INFO } from '@/core/graphql/user';
 
 export function NavUser() {
-  const {data: user, isLoading} = useLoggedInUserInfoQuery();
+  const {data, loading:isLoading} = useQuery(GET_LOGGED_USER_INFO);
   const [logoutUser, { isSuccess: isLogoutSuccess}] =
     useLogoutUserMutation();
   const {isMobile} = useSidebar();
@@ -68,7 +69,7 @@ export function NavUser() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        {user && !isLoading && (
+        {data && !isLoading && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
@@ -76,15 +77,15 @@ export function NavUser() {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg uppercase">
-                    {getAvatarName(user.data.loggedInUserInfo)}
+                    {getAvatarName(data.getLoggedInUser)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {getFullName(user.data.loggedInUserInfo)}
+                    {getFullName(data.getLoggedInUser)}
                   </span>
                   <span className="truncate text-xs">
-                    {user.data.loggedInUserInfo.email}
+                    {data.getLoggedInUser.email}
                   </span>
                 </div>
                 <ChevronsUpDown className="ml-auto size-4" />
@@ -99,15 +100,15 @@ export function NavUser() {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarFallback className="rounded-lg">
-                      {getAvatarName(user.data.loggedInUserInfo)}
+                      {getAvatarName(data.getLoggedInUser)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {getFullName(user.data.loggedInUserInfo)}
+                      {getFullName(data.getLoggedInUser)}
                     </span>
                     <span className="truncate text-xs">
-                      {user.data.loggedInUserInfo.email}
+                      {data.getLoggedInUser.email}
                     </span>
                   </div>
                 </div>

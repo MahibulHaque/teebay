@@ -159,8 +159,9 @@ export const loggedInUserInfoController = async (
 	try {
 		const { accessToken } = req.cookies;
 
-		const decodedAccessToken = verifyAccessToken(accessToken) as ICreateTokenPayload;
-
+		const decodedAccessToken = verifyAccessToken(
+			accessToken,
+		) as ICreateTokenPayload;
 		res.status(200).json({
 			status: 'success',
 			message: 'User info retrived',
