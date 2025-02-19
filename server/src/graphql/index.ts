@@ -1,40 +1,11 @@
 import { ApolloServer } from '@apollo/server';
-
+import schema from './schema';
 export interface MyContext {
-  token?: string;
+  user: string;
 }
 
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-];
-
-const typeDefs = `#graphql
-  type Book {
-    title: String
-    author: String
-  }
-
-  type Query {
-    books: [Book]
-  }
-`;
-
-const resolvers = {
-  Query: {
-    books: () => books,
-  },
-};
-
-const apolloServer = new ApolloServer<MyContext>({
-  typeDefs,
-  resolvers,
+const apolloServer = new ApolloServer({
+  schema
 });
 
 export default apolloServer;

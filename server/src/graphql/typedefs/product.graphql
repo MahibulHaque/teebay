@@ -1,0 +1,32 @@
+scalar Date
+
+enum ProductRentalPeriod {
+  PER_HOUR
+  PER_DAY
+  PER_WEEK
+}
+
+type Product {
+  id: ID!
+  title: String!
+  description: String!
+  price: Float!
+  rentalPrice: Float
+  rentalPeriod: ProductRentalPeriod
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type PurchaseRecord {
+  id: ID!
+  purchasedByUserId: ID!
+  product: Product!
+  createdAt: Date!
+}
+
+type RentalRecord {
+  id: ID!
+  rentedByUserId: ID!
+  product: Product!
+  createdAt: Date!
+}

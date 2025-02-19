@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
-import cors from 'cors'
+import cors from 'cors';
 import express from 'express';
 import { expressMiddleware } from '@apollo/server/express4';
 import app from './app';
 import apolloServer from './graphql';
 import { port } from '../config';
+import { decodeJWTToken } from './services/token.service';
 
 dotenv.config();
 
@@ -13,9 +14,18 @@ const start = async () => {
 		await apolloServer.start();
 		app.use(
 			'/graphql',
-			cors<cors.CorsRequest>(),
+			cors<cors.CorsRequest>({ origin: '*', credentials: true }),
 			express.json(),
-			expressMiddleware(apolloServer)
+			expressMiddleware(apolloServer, {
+				//@ts-ignore
+				context: async ({ req }) => {
+					const { accessToken } = req.cookies;
+					try {
+						const user:any = decodeJWTToken(accessToken as string);
+						return { user:user.user };
+					} catch (error) {}
+				},
+			}),
 		);
 
 		app.listen(port, () => {
