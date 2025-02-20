@@ -6,4 +6,6 @@ type Query {
   getAllSoldProducts: [PurchaseRecord!]!
   getAllLentProducts: [RentalRecord!]!
   getCreatedProductById(id:ID!):Product!
+  getAllAvailableProductsCreatedByOthers:[Product]!
+  getAvailableProductById(id:ID!):Product!
 }

@@ -2,6 +2,8 @@ import {IBaseCommandResponse} from '@/core/interfaces/auth.interface';
 import axiosBaseQuery from '@/core/services/axiosBaseQuery';
 import {
   ICreateNewProductPayload,
+  ICreateProductPurchaseRecordPayload,
+  ICreateProductRentalRecordPayload,
   IDeleteProduct,
   IEditProductPayload,
 } from '@/modules/product-management/interfaces/product.interface';
@@ -36,8 +38,33 @@ export const productManagementApi = createApi({
         data: body,
       }),
     }),
+    createProductPurchaseRecord: builder.mutation<
+      IBaseCommandResponse,
+      ICreateProductPurchaseRecordPayload
+    >({
+      query: body => ({
+        url: 'create-purchase-record',
+        method: 'post',
+        data: body,
+      }),
+    }),
+    createProductRentalRecord: builder.mutation<
+      IBaseCommandResponse,
+      ICreateProductRentalRecordPayload
+    >({
+      query: body => ({
+        url: 'create-rental-record',
+        method: 'post',
+        data: body,
+      }),
+    }),
   }),
 });
 
-export const {useDeleteProductMutation, useCreateProductMutation, useUpdateProductMutation} =
-  productManagementApi;
+export const {
+  useDeleteProductMutation,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useCreateProductPurchaseRecordMutation,
+  useCreateProductRentalRecordMutation,
+} = productManagementApi;

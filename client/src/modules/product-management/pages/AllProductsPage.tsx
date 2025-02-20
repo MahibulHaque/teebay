@@ -1,13 +1,17 @@
+import AllAvailableProductList from "../components/AllAvailableProductList";
 
 export default function AllProductsPage() {
   return (
-    <div className="flex  flex-1 flex-col gap-4 p-4 pt-0">
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-      </div>
-      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-    </div>
+    <section className="flex h-full w-full flex-col gap-8 p-4">
+      <header className="flex w-full items-center justify-between gap-4">
+        <div className="flex flex-col items-start gap-2">
+          <h1 className="text-primary text-2xl font-bold">All Available Products</h1>
+          <p className="text-primary text-base font-normal">
+            Buy or rent available products from others
+          </p>
+        </div>
+      </header>
+      <AllAvailableProductList />
+    </section>
   );
 }

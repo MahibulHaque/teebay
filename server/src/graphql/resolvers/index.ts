@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { findUserWithId } from '../../models/user.model';
-import { getAllAvailableProductsOfUser, getAllLentProducts, getAllPurchasedProducts, getAllRentedProducts, getAllSoldProducts, getAvailableProductById } from '../../models/product.model';
+import { getAllAvailableProductsCreatedByOthers, getAllAvailableProductsOfUser, getAllLentProducts, getAllPurchasedProducts, getAllRentedProducts, getAllSoldProducts, getAvailableProductById } from '../../models/product.model';
 
 // Helper function to check authentication
 const checkAuth = (context: any) => {
@@ -133,6 +133,36 @@ const resolvers = {
         });
       }
     },
+    getAllAvailableProductsCreatedByOthers:async(_: any, __: any, context: any)=>{
+      const userId = checkAuth(context);
+      try {
+        const products = await getAllAvailableProductsCreatedByOthers(userId);
+        return products;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch all available products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    },
+    getAvailableProductById:async(_: any, {id}: {id:string}, context: any)=>{
+      checkAuth(context);
+      try {
+        const products = await getAvailableProductById(id);
+        return products;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch all available products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    }
   },
 };
 

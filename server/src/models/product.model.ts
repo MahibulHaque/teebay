@@ -102,7 +102,7 @@ export const getAvailableProductById = async (productId: string) => {
 	return prisma.product.findUnique({
 		where: {
 			id: productId,
-			productAvailability:'AVAILABLE'
+			productAvailability: 'AVAILABLE',
 		},
 	});
 };
@@ -163,6 +163,9 @@ export const getAllSoldProducts = async (userId: string) => {
 				creatorId: userId,
 			},
 		},
+		include: {
+			product: true,
+		},
 	});
 };
 
@@ -173,6 +176,9 @@ export const getAllLentProducts = async (userId: string) => {
 				creatorId: userId,
 			},
 		},
+		include: {
+			product: true,
+		},
 	});
 };
 
@@ -180,6 +186,20 @@ export const getAllAvailableProductsOfUser = async (userId: string) => {
 	return prisma.product.findMany({
 		where: {
 			creatorId: userId,
+			productAvailability: 'AVAILABLE',
+		},
+	});
+};
+
+export const getAllAvailableProductsCreatedByOthers = async (
+	userId: string,
+) => {
+	return prisma.product.findMany({
+		where: {
+			NOT: {
+				creatorId: userId,
+			},
+			productAvailability: 'AVAILABLE',
 		},
 	});
 };

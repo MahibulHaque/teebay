@@ -11,6 +11,7 @@ import MyProductsPage from './modules/product-management/pages/MyProductsPage';
 import ProductsDashboardPage from './modules/product-management/pages/ProductsDashboardPage';
 import EditProductPage from './modules/product-management/pages/EditProductPage';
 import CreateProductPage from './modules/product-management/pages/CreateProductPage';
+import BuyRentProductPage from './modules/product-management/pages/BuyRentProductPage';
 
 function App() {
   useAuthInitializer();
@@ -43,6 +44,15 @@ function App() {
             path="/product-dashboard"
             element={<ProductsDashboardPage />}
           />
+          <Route
+          key={'buyRentProduct'}
+          path="/buy-and-rent-product/:productId"
+          element={
+            <ProtectedRoute>
+              <BuyRentProductPage />
+            </ProtectedRoute>
+          }
+        />
         </Route>
         <Route
           key={'createProduct'}
@@ -62,6 +72,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           key="signin"
           path={'/signin'}

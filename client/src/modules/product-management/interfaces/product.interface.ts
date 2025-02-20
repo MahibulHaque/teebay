@@ -1,3 +1,4 @@
+import {EnumProductAvailabilityStatus} from '@/core/enums/productAvailabilityStatus.enum';
 import {EnumProductCategory} from '@/core/enums/productCategory.enum';
 import {EnumProductRentalPeriod} from '@/core/enums/productRentalPeriod.enum';
 
@@ -7,6 +8,7 @@ export interface IMyProductData {
   description: string;
   price: number;
   rentalPrice: number;
+  productAvailabilityStatus: EnumProductAvailabilityStatus;
   rentalPeriod: EnumProductRentalPeriod;
   categories: EnumProductCategory[];
   createdAt: Date;
@@ -32,4 +34,16 @@ export interface IEditProductPayload {
 }
 export interface IDeleteProduct {
   productId: string;
+}
+
+export interface ICreateProductPurchaseRecordPayload {
+  productId: string;
+  productTitle: string;
+}
+
+export interface ICreateProductRentalRecordPayload {
+  productId: string;
+  productTitle: string;
+  rentedFrom: string;
+  rentedTill: string;
 }
