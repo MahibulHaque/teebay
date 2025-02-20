@@ -1,4 +1,3 @@
-import React from 'react';
 import BuyRentProductDetails from '../components/BuyRentProductDetails';
 import {useQuery} from '@apollo/client';
 import {useParams} from 'react-router';

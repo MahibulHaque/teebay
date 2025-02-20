@@ -32,7 +32,7 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
           // Return a new observable to handle the token refresh
           return new Observable(observer => {
             // Call your refresh token endpoint
-            axios.post(`${import.meta.env.VITE_BASE_API_URL}/auth/generate-token`, {}, { withCredentials: true })
+            axios.post(`${import.meta.env.VITE_BASE_API_URL}/api/v1/auth/generate-token`, {}, { withCredentials: true })
               .then(() => {
                 // Token refreshed successfully
                 isRefreshing = false;

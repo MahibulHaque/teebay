@@ -3,7 +3,7 @@ import { updateIsUserLoggedIn } from '../store/slices/auth.slice';
 import { store } from '../store/store';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API_URL,
+  baseURL: `${import.meta.env.VITE_BASE_API_URL}/api/v1`,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_API_URL}/auth/generate-token`,
+          `${import.meta.env.VITE_BASE_API_URL}/api/v1/auth/generate-token`,
           {},
           { withCredentials: true },
         );

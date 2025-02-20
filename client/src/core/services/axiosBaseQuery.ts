@@ -11,10 +11,9 @@ interface IAxiosBaseQuery {
 }
 
 const axiosBaseQuery =
-  ({baseUrl} = {baseUrl: import.meta.env.VITE_BASE_API_URL}) =>
+  ({baseUrl} = {baseUrl: `${import.meta.env.VITE_BASE_API_URL}/api/v1`}) =>
   async ({url, method, data, params, headers}: IAxiosBaseQuery) => {
     try {
-      console.log(baseUrl, url, import.meta.env.VITE_BASE_API_URL);
       const result = await axiosInstance({
         url: baseUrl + url,
         method,

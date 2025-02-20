@@ -1,4 +1,3 @@
-import React from 'react';
 import ReadOnlyProductCard from './ReadOnlyProductCard';
 import {useQuery} from '@apollo/client';
 import {GET_ALL_PURCHASED_PRODUCTS} from '@/core/graphql/product';

@@ -43,7 +43,7 @@ export default function LoginForm({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [loginUser, {isLoading, isSuccess, isError, error}] =
+  const [loginUser, {isLoading, isSuccess, isError}] =
     useLoginUserMutation();
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function LoginForm({
 
   useEffect(() => {
     if (isError) {
-      toast(error?.data?.message);
+      toast("Invalida credentials provided");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError]);
