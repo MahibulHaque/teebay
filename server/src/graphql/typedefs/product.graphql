@@ -45,6 +45,8 @@ type PurchaseRecord {
 type RentalRecord {
   id: ID!
   rentedByUserId: ID!
+  rentedOn:Date
+  rentedTill:Date
   product: Product!
   createdAt: Date!
 }
