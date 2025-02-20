@@ -10,7 +10,7 @@ export const productTitleSchema = z.object({
 });
 
 export const productDescriptionSchema = z.object({
-  description: z.string().min(3).max(255),
+  description: z.string().min(3).max(1000),
 });
 
 export const productCategoriesSchema = z.object({
