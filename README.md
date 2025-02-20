@@ -1,5 +1,11 @@
-# Express React Application
+# Teebay Application
 
-This repository contains a full-stack web application built with Express.js backend and React frontend. Below is the project structure and organization.
+# Documentation of project
 
-## Project Structure
+### Topics/Features
+1. [BE Project Setup](./docs/be-project-setup.md)
+2. [FE Project Setup](./docs/fe-project-setup.md)
+3. [Project Layout](./docs/project-layout.md)
+4. [Project Authentication](./docs/project-authentication.md)
+5. [Style Guide](./docs/style-guide.md)
+6. [Teebay Database Design](./docs/er-diagram.md)

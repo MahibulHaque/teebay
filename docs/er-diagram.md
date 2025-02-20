@@ -1,0 +1,1 @@
+![Entity Relationship Diagram for Teebay](./er-diagram-teebay.png)
