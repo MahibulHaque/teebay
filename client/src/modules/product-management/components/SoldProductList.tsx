@@ -3,10 +3,14 @@ import {useQuery} from '@apollo/client';
 import {GET_ALL_SOLD_PRODUCTS} from '@/core/graphql/product';
 import {IMyProductData} from '../interfaces/product.interface';
 import {NoDataAvailable} from '@/components/emptyState/EmptyState';
+import { Loader2 } from 'lucide-react';
 
 export default function SoldProductList() {
-  const {data} = useQuery(GET_ALL_SOLD_PRODUCTS);
-  if (!data) {
+  const {data, loading} = useQuery(GET_ALL_SOLD_PRODUCTS);
+  if(loading){
+    return <Loader2 className="text-primary h-4 w-4 animate-spin" />
+  }
+  if (data.getAllSoldProducts.length===0) {
     return <NoDataAvailable />;
   }
   return (
