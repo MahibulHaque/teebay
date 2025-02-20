@@ -7,6 +7,8 @@ import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 import BaseAppLayout from './layouts/BaseAppLayout';
 import AllProductsPage from './modules/product-management/pages/AllProductsPage';
 import RedirectSignedInUser from './components/redirectRoute/RedirectSignedInUser';
+import MyProductsPage from './modules/product-management/pages/MyProductsPage';
+import ProductsDashboardPage from './modules/product-management/pages/ProductsDashboardPage';
 
 function App() {
   useAuthInitializer();
@@ -28,6 +30,16 @@ function App() {
             key={'products'}
             path="/all-products"
             element={<AllProductsPage />}
+          />
+          <Route
+            key={'myProducts'}
+            path="/my-products"
+            element={<MyProductsPage />}
+          />
+          <Route
+            key={'productDashboard'}
+            path="/product-dashboard"
+            element={<ProductsDashboardPage />}
           />
         </Route>
         <Route

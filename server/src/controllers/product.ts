@@ -6,8 +6,10 @@ import {
 } from '../validators/product';
 import {
 	addNewProduct,
+	deleteProduct,
 	purchaseProduct,
 	rentProduct,
+	updateProduct,
 } from '../services/product.service';
 import {
 	ICreateTokenPayload,
@@ -74,6 +76,55 @@ export const createRentalRecordController = async (
 		res.status(200).json({
 			status: 'success',
 			message: 'Product rented successfully',
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const updateProductDetailsController = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const updateProductPayload = createProductValidationSchema.parse(
+			req.body,
+		);
+
+		const productId = req.params.productId;
+		const { accessToken } = req.cookies;
+		const { id: userId } = verifyAccessToken(
+			accessToken,
+		) as ICreateTokenPayload;
+
+		await updateProduct(updateProductPayload, productId, userId);
+
+		res.status(200).json({
+			status: 'success',
+			message: 'Product details updated successfully',
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const deleteProductController = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const productId = req.params.productId;
+		const { accessToken } = req.cookies;
+		const { id: userId } = verifyAccessToken(
+			accessToken,
+		) as ICreateTokenPayload;
+		await deleteProduct(productId, userId);
+
+		res.status(200).json({
+			status: 'success',
+			message: `Product deleted successfully`,
 		});
 	} catch (error) {
 		next(error);

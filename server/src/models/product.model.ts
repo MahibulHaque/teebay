@@ -1,5 +1,6 @@
 import { prisma } from '../lib/prisma';
 import { Product, ProductAvailabilityStatus } from '@prisma/client';
+import { CreateEditProductPayloadType } from '../validators/product';
 
 export const createProduct = async (
 	productData: Omit<Product, 'id' | 'productAvailability' | 'creatorId'>,
@@ -10,6 +11,35 @@ export const createProduct = async (
 			...productData,
 			productAvailability: 'AVAILABLE',
 			creatorId,
+		},
+	});
+};
+
+export const updateProductDetails = async (
+	productData: CreateEditProductPayloadType,
+	productId: string,
+	userId: string,
+) => {
+	return prisma.product.update({
+		data: {
+			...productData,
+		},
+		where: {
+			id: productId,
+			creatorId: userId,
+		},
+	});
+};
+
+export const deleteProductRecord = async (
+	productId: string,
+	userId: string,
+) => {
+	return prisma.product.delete({
+		where: {
+			id: productId,
+			creatorId: userId,
+			productAvailability: 'AVAILABLE',
 		},
 	});
 };

@@ -2,11 +2,14 @@ import {
 	createProduct,
 	createProductRentalRecord,
 	createPurchaseRecord,
+	deleteProductRecord,
 	findAvailableProductForPurchase,
 	findAvailableProductForRent,
 	updateProductAvailability,
+	updateProductDetails,
 } from '../models/product.model';
 import { CustomError } from '../utils/error';
+import { CreateEditProductPayloadType } from '../validators/product';
 
 export const addNewProduct = async (productData: any, userId: string) => {
 	return createProduct(productData, userId);
@@ -54,5 +57,18 @@ export const rentProduct = async ({
 		throw new CustomError('Requested product is not available for sale', 400);
 	}
 
-	await createProductRentalRecord({productId, userId, rentedFrom, rentedTill});
+	await createProductRentalRecord({
+		productId,
+		userId,
+		rentedFrom,
+		rentedTill,
+	});
 };
+
+export const updateProduct = async (updatedProductDetails: CreateEditProductPayloadType, productId:string, userId:string) => {
+	await updateProductDetails(updatedProductDetails, productId, userId)
+};
+
+export const deleteProduct = async (productId:string, userId:string)=>{
+	await deleteProductRecord(productId, userId)
+}

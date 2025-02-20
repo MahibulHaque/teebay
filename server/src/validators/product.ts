@@ -10,6 +10,8 @@ export const createProductValidationSchema = z.object({
 	rentalPeriod: z.nativeEnum(ProductRentalPeriod),
 });
 
+export type CreateEditProductPayloadType = z.infer<typeof createProductValidationSchema>
+
 export const createProductPurchaseRecordValidationSchema = z.object({
 	productId: z.string(),
 	productTitle: z.string(),

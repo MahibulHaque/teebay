@@ -3,6 +3,7 @@ import {gql} from '@apollo/client';
 export const GET_CREATED_AVAILABLE_PRODUCTS = gql`
   query GetCreatedProducts {
     getCreatedProducts {
+      id
       title
       description
       price
