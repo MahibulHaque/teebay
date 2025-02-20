@@ -3,6 +3,7 @@ import axiosBaseQuery from '@/core/services/axiosBaseQuery';
 import {
   ICreateNewProductPayload,
   IDeleteProduct,
+  IEditProductPayload,
 } from '@/modules/product-management/interfaces/product.interface';
 import {createApi} from '@reduxjs/toolkit/query/react';
 
@@ -21,6 +22,13 @@ export const productManagementApi = createApi({
         data: body,
       }),
     }),
+    updateProduct: builder.mutation<IBaseCommandResponse, IEditProductPayload>({
+      query: body => ({
+        url: `update-product/${body.productId}`,
+        method: 'put',
+        data: body,
+      }),
+    }),
     deleteProduct: builder.mutation<IBaseCommandResponse, IDeleteProduct>({
       query: body => ({
         url: `delete-product/${body.productId}`,
@@ -31,4 +39,5 @@ export const productManagementApi = createApi({
   }),
 });
 
-export const {useDeleteProductMutation, useCreateProductMutation} = productManagementApi;
+export const {useDeleteProductMutation, useCreateProductMutation, useUpdateProductMutation} =
+  productManagementApi;

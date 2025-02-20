@@ -1,24 +1,22 @@
-import { productCategoriesSchema, productDescriptionSchema, productPriceSchema, productTitleSchema } from "../schemas";
-
 export const createProductFormSteps = [
   {
-    title: 'Product Title',
-    description: '',
-    schema: productTitleSchema,
+    title: 'Step 1',
+    name: 'Product Title',
+    fields: ['title'],
   },
   {
-    title: 'Description',
-    description: '',
-    schema: productDescriptionSchema,
+    title: 'Step 2',
+    name: 'Product Description',
+    fields: ['description'],
   },
   {
-    title: 'Categories',
-    description: '',
-    schema: productCategoriesSchema,
+    title: 'Step 3',
+    name: 'Product Categories',
+    fields: ['categories'],
   },
   {
-    title: 'Pricing',
-    description: '',
-    schema: productPriceSchema,
+    title: 'Step 4',
+    name: 'Product Pricing',
+    fields: ['price', 'rentalPrice', 'rentalPeriod'],
   },
-];
+] as const;

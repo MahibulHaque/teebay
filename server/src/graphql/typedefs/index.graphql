@@ -5,4 +5,5 @@ type Query {
   getAllRentedProducts: [RentalRecord!]!
   getAllSoldProducts: [PurchaseRecord!]!
   getAllLentProducts: [RentalRecord!]!
+  getCreatedProductById(id:ID!):Product!
 }

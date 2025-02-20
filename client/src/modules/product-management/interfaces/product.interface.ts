@@ -21,6 +21,15 @@ export interface ICreateNewProductPayload {
   categories: EnumProductCategory[];
 }
 
+export interface IEditProductPayload {
+  productId: string;
+  title: string;
+  description: string;
+  price: number;
+  rentalPrice: number;
+  rentalPeriod: EnumProductRentalPeriod;
+  categories: EnumProductCategory[];
+}
 export interface IDeleteProduct {
   productId: string;
 }

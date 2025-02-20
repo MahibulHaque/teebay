@@ -41,6 +41,7 @@ export const GET_ALL_PURCHASED_PRODUCTS = gql`
     getAllPurchasedProducts {
       purchasedByUserId
       product {
+        id
         title
         description
         price
@@ -84,6 +85,19 @@ export const GET_ALL_SOLD_PRODUCTS = gql`
         createdAt
         updatedAt
       }
+    }
+  }
+`;
+
+export const GET_SINGLE_AVAILABLE_PRODUCT = gql`
+  query GetCreatedProductById($getCreatedProductByIdId: ID!) {
+    getCreatedProductById(id: $getCreatedProductByIdId) {
+      title
+      description
+      price
+      categories
+      rentalPeriod
+      rentalPrice
     }
   }
 `;

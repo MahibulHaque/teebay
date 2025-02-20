@@ -98,6 +98,15 @@ export const createPurchaseRecord = async (
 	]);
 };
 
+export const getAvailableProductById = async (productId: string) => {
+	return prisma.product.findUnique({
+		where: {
+			id: productId,
+			productAvailability:'AVAILABLE'
+		},
+	});
+};
+
 export const getAllPurchasedProducts = async (userId: string) => {
 	return prisma.purchaseProductRecord.findMany({
 		where: {

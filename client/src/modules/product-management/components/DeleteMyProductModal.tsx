@@ -9,8 +9,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {useDeleteProductMutation} from '@/core/store/api/productManagementApi';
-import { Loader2 } from 'lucide-react';
+import {Loader2} from 'lucide-react';
 import {toast} from 'sonner';
+import {apolloClient} from '@/lib/apollo';
+import {GET_CREATED_AVAILABLE_PRODUCTS} from '@/core/graphql/product';
 
 interface IDeleteMyProductModalProps {
   productId: string;
@@ -35,13 +37,18 @@ export default function DeleteMyProductModal({
   const handleProductDelete = async () => {
     try {
       await deleteProductFn({productId});
+      await apolloClient.refetchQueries({
+        include: [GET_CREATED_AVAILABLE_PRODUCTS],
+      });
     } catch (error) {
       console.log(error);
       toast('Something went when trying to delete the product');
     }
   };
 
-  const handleDialogClose = () => {};
+  const handleDialogClose = () => {
+    setIsDialogOpen(false)
+  };
 
   return (
     <Dialog open={isDialogOpen}>

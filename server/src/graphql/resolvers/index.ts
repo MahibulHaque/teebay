@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { findUserWithId } from '../../models/user.model';
-import { getAllAvailableProductsOfUser, getAllLentProducts, getAllPurchasedProducts, getAllRentedProducts, getAllSoldProducts } from '../../models/product.model';
+import { getAllAvailableProductsOfUser, getAllLentProducts, getAllPurchasedProducts, getAllRentedProducts, getAllSoldProducts, getAvailableProductById } from '../../models/product.model';
 
 // Helper function to check authentication
 const checkAuth = (context: any) => {
@@ -109,6 +109,22 @@ const resolvers = {
         return products;
       } catch (error) {
         throw new GraphQLError('Failed to fetch sold products', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            http: { status: 500 },
+            originalError: error
+          },
+        });
+      }
+    },
+    getCreatedProductById: async (_: any, {id}: {id:string}, context: any) => {
+      checkAuth(context);
+      
+      try {
+        const product = await getAvailableProductById(id);
+        return product;
+      } catch (error) {
+        throw new GraphQLError('Failed to fetch product detail', {
           extensions: {
             code: 'INTERNAL_SERVER_ERROR',
             http: { status: 500 },

@@ -9,6 +9,8 @@ import AllProductsPage from './modules/product-management/pages/AllProductsPage'
 import RedirectSignedInUser from './components/redirectRoute/RedirectSignedInUser';
 import MyProductsPage from './modules/product-management/pages/MyProductsPage';
 import ProductsDashboardPage from './modules/product-management/pages/ProductsDashboardPage';
+import EditProductPage from './modules/product-management/pages/EditProductPage';
+import CreateProductPage from './modules/product-management/pages/CreateProductPage';
 
 function App() {
   useAuthInitializer();
@@ -42,6 +44,24 @@ function App() {
             element={<ProductsDashboardPage />}
           />
         </Route>
+        <Route
+          key={'createProduct'}
+          path="/create-product"
+          element={
+            <ProtectedRoute>
+              <CreateProductPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={'editProduct'}
+          path="/edit-product/:productId"
+          element={
+            <ProtectedRoute>
+              <EditProductPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           key="signin"
           path={'/signin'}

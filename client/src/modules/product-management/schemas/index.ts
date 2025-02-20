@@ -14,7 +14,7 @@ export const productDescriptionSchema = z.object({
 });
 
 export const productCategoriesSchema = z.object({
-  categories: z.array(z.nativeEnum(EnumProductCategory)).min(1, "Please select at least one category"),
+  categories: z.nativeEnum(EnumProductCategory).array().min(1, "Please select at least one category"),
 });
 
 export const productPriceSchema = z.object({

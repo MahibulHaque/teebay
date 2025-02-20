@@ -1,9 +1,16 @@
 import {Button} from '@/components/ui/button';
 import MyProductList from '../components/MyProductList';
+import {useNavigate} from 'react-router';
 
 export default function MyProductsPage() {
+  const navigate = useNavigate();
+
+  const handleNavigateToAddProductPage = () => {
+    navigate('/create-product');
+  };
+
   return (
-    <section className="flex h-full w-full flex-col p-4 gap-8">
+    <section className="flex h-full w-full flex-col gap-8 p-4">
       <header className="flex w-full items-center justify-between gap-4">
         <div className="flex flex-col items-start gap-2">
           <h1 className="text-primary text-2xl font-bold">My Products</h1>
@@ -11,9 +18,11 @@ export default function MyProductsPage() {
             Manage your available products and create new product
           </p>
         </div>
-        <Button variant={'default'}>Add Product</Button>
+        <Button variant={'default'} onClick={handleNavigateToAddProductPage}>
+          Add Product
+        </Button>
       </header>
-      <MyProductList/>
+      <MyProductList />
     </section>
   );
 }
